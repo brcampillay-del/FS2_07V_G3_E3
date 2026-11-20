@@ -1,0 +1,9 @@
+cl\duoc\levelupgamer\repository\ProductoRepository.class
+cl\duoc\levelupgamer\config\DataLoader.class
+cl\duoc\levelupgamer\controller\ProductoController.class
+cl\duoc\levelupgamer\controller\AuthController.class
+cl\duoc\levelupgamer\LevelupgamerApiApplication.class
+cl\duoc\levelupgamer\config\SecurityConfig.class
+cl\duoc\levelupgamer\config\CorsConfig.class
+cl\duoc\levelupgamer\model\Producto.class
+cl\duoc\levelupgamer\dto\LoginRequest.class
