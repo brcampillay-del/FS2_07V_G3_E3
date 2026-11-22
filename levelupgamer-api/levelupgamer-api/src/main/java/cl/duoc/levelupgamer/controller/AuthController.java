@@ -1,5 +1,4 @@
 package cl.duoc.levelupgamer.controller;
-
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
@@ -18,7 +17,6 @@ import org.springframework.security.oauth2.jwt.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,9 +40,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest input) {
+        String email = input.email().trim().toLowerCase();
+
+        if (!userDetailsManager.userExists(email)) {
+            return ResponseEntity.status(401)
+                .body(Map.of("message", "La cuenta no está registrada. Por favor, regístrate primero."));
+        }
+
         try {
             Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(input.email(), input.password())
+                new UsernamePasswordAuthenticationToken(email, input.password())
             );
 
             String rol = auth.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
@@ -54,7 +59,7 @@ public class AuthController {
 
             JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("levelupgamer-api")
-                .subject(input.email())
+                .subject(email)
                 .claim("rol", rol)
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiresIn))
@@ -67,12 +72,12 @@ public class AuthController {
                 "accessToken", token,
                 "tokenType", "Bearer",
                 "expiresIn", expiresIn,
-                "email", input.email(),
+                "email", email,
                 "rol", rol
             ));
 
         } catch (AuthenticationException ex) {
-            return ResponseEntity.status(401).body(Map.of("message", "Credenciales incorrectas"));
+            return ResponseEntity.status(401).body(Map.of("message", "Contraseña incorrecta. Inténtalo nuevamente."));
         }
     }
 

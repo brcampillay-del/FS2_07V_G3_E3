@@ -12,6 +12,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,14 +40,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService users(PasswordEncoder encoder) {
-        var admin = User.withUsername("admin@duocuc.cl")
-                .password(encoder.encode("admin123"))
+    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails admin = User.builder()
+                .username("admin@duocuc.cl")
+                .password(passwordEncoder.encode("admin123"))
                 .roles("ADMIN")
                 .build();
 
-        var cliente = User.withUsername("cliente@levelup.cl")
-                .password(encoder.encode("cliente123"))
+        UserDetails cliente = User.builder()
+                .username("cliente@levelup.cl")
+                .password(passwordEncoder.encode("cliente123"))
                 .roles("CLIENTE")
                 .build();
 
@@ -100,7 +103,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/auth/login", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
+                .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
