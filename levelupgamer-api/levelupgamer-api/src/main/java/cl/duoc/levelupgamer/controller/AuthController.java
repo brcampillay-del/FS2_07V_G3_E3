@@ -97,8 +97,8 @@ public class AuthController {
         String emailNormalizado = email.trim().toLowerCase();
 
         if (userDetailsManager.userExists(emailNormalizado)) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("message", "Este correo ya se encuentra registrado."));
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "Este correo ya está asociado a una cuenta."));
         }
 
         UserDetails nuevoUsuario = User.builder()
