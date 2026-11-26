@@ -4,15 +4,19 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
     info = @Info(
-        title = "API REST Level-Up Gamer",
+        title = "API Level-Up Gamer",
         version = "1.0",
-        description = "Documentación oficial del backend e-commerce y panel administrador"
-    )
+        description = "API REST para catálogo, compras, soporte y autenticación JWT"
+    ),
+    servers = {
+        @Server(url = "/", description = "Servidor actual")
+    }
 )
 @SecurityScheme(
     name = "bearerAuth",
@@ -21,5 +25,4 @@ import org.springframework.context.annotation.Configuration;
     bearerFormat = "JWT"
 )
 public class OpenApiConfig {
-    
 }
